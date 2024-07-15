@@ -1,0 +1,780 @@
+#### Consolidating DV
+################################ EXPULSIONS AND NONCITIZEN APPREHENSIONS BY Country ################################
+library(readxl)
+library(dplyr)
+# School Computer
+expulsion_1322 <- read_excel("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/EXPULSIONS_1322.xlsx", 3)
+expulsion_0312 <- read_excel("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/EXPULSIONS_0312.xls")
+expulsion_9302 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/EXPULSIONS_9302.xlsx")
+expulsion_9302 <- expulsion_9302[, colSums(is.na(expulsion_9302)) != nrow(expulsion_9302)]
+
+#rename
+expulsion_9302[expulsion_9302$`Country` == 'Venezuela', 1] <- 'Venezuela, RB'
+expulsion_9302[expulsion_9302$`Country` == "Bahamas", 1] <- "Bahamas, The"
+expulsion_9302[expulsion_9302$`Country` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+expulsion_9302[expulsion_9302$`Country` == 'Saint Lucia', 1] <- 'St. Lucia'
+expulsion_9302[expulsion_9302$`Country` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+expulsion_9302[expulsion_9302$`Country` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+expulsion_9302[expulsion_9302$`Country` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+expulsion_9302[expulsion_9302$`Country` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+expulsion_9302[expulsion_9302$`Country` == 'St. Martin', 1] <- 'St. Martin (French part)'
+expulsion_9302[expulsion_9302$`Country` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+expulsion_1322 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/EXPULSIONS_1322.xlsx", 3)
+#rename
+expulsion_1322[expulsion_1322$`Country` == 'Venezuela', 1] <- 'Venezuela, RB'
+expulsion_1322[expulsion_1322$`Country` == "Bahamas", 1] <- "Bahamas, The"
+expulsion_1322[expulsion_1322$`Country` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+expulsion_1322[expulsion_1322$`Country` == 'Saint Lucia', 1] <- 'St. Lucia'
+expulsion_1322[expulsion_1322$`Country` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+expulsion_1322[expulsion_1322$`Country` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+expulsion_1322[expulsion_1322$`Country` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+expulsion_1322[expulsion_1322$`Country` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+expulsion_1322[expulsion_1322$`Country` == 'St. Martin', 1] <- 'St. Martin (French part)'
+expulsion_1322[expulsion_1322$`Country` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+expulsion_0312 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/EXPULSIONS_0312.xls")
+#rename
+expulsion_0312[expulsion_0312$`Country` == 'Venezuela', 1] <- 'Venezuela, RB'
+expulsion_0312[expulsion_0312$`Country` == "Bahamas, The", 1] <- "Bahamas, The"
+expulsion_0312[expulsion_0312$`Country` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+expulsion_0312[expulsion_0312$`Country` == 'Saint Lucia', 1] <- 'St. Lucia'
+expulsion_0312[expulsion_0312$`Country` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+expulsion_0312[expulsion_0312$`Country` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+expulsion_0312[expulsion_0312$`Country` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+expulsion_0312[expulsion_0312$`Country` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+expulsion_0312[expulsion_0312$`Country` == 'St. Martin', 1] <- 'St. Martin (French part)'
+expulsion_0312[expulsion_0312$`Country` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+
+# merge two data frames by Country
+expulsion_0322 <- merge(expulsion_0312, expulsion_1322, by = "Country", all = TRUE)
+expulsion_9322 <- merge(expulsion_9302, expulsion_0322, by = "Country", all = TRUE)
+
+# structure adjustment to fit the data structure
+names(expulsion_9322)[names(expulsion_9322) == 'Country'] <- 'Country Name'
+expulsion_9322$`Country Code` <- NA
+expulsion_9322$`Series Name` <- 'Number of Expulsion'
+expulsion_9322$`Series Code` <- 'NO.EXP.'
+View(expulsion_9322)
+
+# changing columns to numeric
+colnum1 <- 5:ncol(expulsion_9322)
+expulsion_9322[, colnum1] <- lapply(expulsion_9322[, colnum1], as.numeric)
+
+################################ Legal Permanent Residency ################################
+# School Computer
+LPR_9399 <- read_excel("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/LPR_9399.xlsx")
+View(LPR_9399)
+LPR_0019 <- read_excel("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/LPR_0019.xlsx")
+View(LPR_0019)
+LPR_2022 <- read_excel("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/LPR_2022.xlsx", 4)
+View(LPR_2022)
+# home desktop
+lpr9300 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/LPR_9300.xlsx")
+#rename
+lpr9300[lpr9300$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+lpr9300[lpr9300$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+lpr9300[lpr9300$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+lpr9300[lpr9300$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+lpr9300[lpr9300$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+lpr9300[lpr9300$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+lpr9300[lpr9300$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+lpr9300[lpr9300$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+lpr9300[lpr9300$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+lpr9300[lpr9300$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+lpr0109 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/LPR_0109.xlsx")
+#rename
+lpr0109[lpr0109$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+lpr0109[lpr0109$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+lpr0109[lpr0109$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+lpr0109[lpr0109$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+lpr0109[lpr0109$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+lpr0109[lpr0109$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+lpr0109[lpr0109$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+lpr0109[lpr0109$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+lpr0109[lpr0109$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+lpr0109[lpr0109$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+lpr1019 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/LPR_1019.xlsx")
+#rename
+lpr1019[lpr1019$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+lpr1019[lpr1019$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+lpr1019[lpr1019$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+lpr1019[lpr1019$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+lpr1019[lpr1019$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+lpr1019[lpr1019$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+lpr1019[lpr1019$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+lpr1019[lpr1019$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+lpr1019[lpr1019$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+lpr1019[lpr1019$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+lpr2022 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/LPR_2022.xlsx", 4)
+#rename
+lpr2022[lpr2022$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+lpr2022[lpr2022$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+lpr2022[lpr2022$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+lpr2022[lpr2022$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+lpr2022[lpr2022$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+lpr2022[lpr2022$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+lpr2022[lpr2022$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+lpr2022[lpr2022$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+lpr2022[lpr2022$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+lpr2022[lpr2022$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+
+# merge two data frames by Country Name
+lpr9309 <- merge(lpr9300, lpr0109, by = "Country Name", all = TRUE)
+lpr9319 <- merge(lpr9309, lpr1019, by = "Country Name", all = TRUE)
+lpr9322 <- merge(lpr9319, lpr2022, by = "Country Name", all = TRUE)
+lpr9322[, 2:ncol(lpr9322)] <- lapply(lpr9322[, 2:ncol(lpr9322)], as.numeric)
+
+# structure adjustment to fit the data structure
+lpr9322$`Country Code` <- NA
+lpr9322$`Series Name` <- 'Number of Legal Permanent Resident'
+lpr9322$`Series Code` <- 'NO.LPR.'
+#lpr9322 <- lpr9322[ , c(1, 32:34, 2:31)]
+
+
+################################ Refugees ################################
+# School Computer
+ref_9300 <- read_excel("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Refugees_9300.xlsx")
+ref_0109 <- read_excel("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Refugees_0109.xlsx")
+ref_1019 <- read_excel("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Refugees_1019.xlsx")
+ref_2022 <- read_excel("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Refugees_2022.xlsx", 3)
+
+# home desktop
+ref9300 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Refugees_9300.xlsx")
+#rename
+ref9300[ref9300$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+ref9300[ref9300$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+ref9300[ref9300$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+ref9300[ref9300$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+ref9300[ref9300$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+ref9300[ref9300$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+ref9300[ref9300$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+ref9300[ref9300$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+ref9300[ref9300$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+ref9300[ref9300$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+ref0109 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Refugees_0109.xlsx")
+#rename
+ref0109[ref0109$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+ref0109[ref0109$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+ref0109[ref0109$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+ref0109[ref0109$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+ref0109[ref0109$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+ref0109[ref0109$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+ref0109[ref0109$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+ref0109[ref0109$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+ref0109[ref0109$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+ref0109[ref0109$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+ref1019 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Refugees_1019.xlsx")
+#rename
+ref1019[ref1019$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+ref1019[ref1019$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+ref1019[ref1019$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+ref1019[ref1019$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+ref1019[ref1019$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+ref1019[ref1019$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+ref1019[ref1019$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+ref1019[ref1019$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+ref1019[ref1019$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+ref1019[ref1019$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+ref2022 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Refugees_2022.xlsx", 3)
+#rename
+ref2022[ref2022$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+ref2022[ref2022$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+ref2022[ref2022$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+ref2022[ref2022$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+ref2022[ref2022$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+ref2022[ref2022$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+ref2022[ref2022$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+ref2022[ref2022$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+ref2022[ref2022$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+ref2022[ref2022$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+# merge two data frames by Country Name
+ref9309 <- merge(ref9300, ref0109, by = "Country Name", all = TRUE)
+ref9319 <- merge(ref9309, ref1019, by = "Country Name", all = TRUE)
+ref9322 <- merge(ref9319, ref2022, by = "Country Name", all = TRUE)
+ref9322[, 2:ncol(ref9322)] <- lapply(ref9322[, 2:ncol(ref9322)], as.numeric)
+
+# structure adjustment to fit the data structure
+ref9322$`Country Code` <- NA
+ref9322$`Series Name` <- 'Number of Refugees'
+ref9322$`Series Code` <- 'NO.REF.'
+
+
+################################ Affirmative Asylum ################################
+# home desktop
+aa_1322 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Asylum_1322.xlsx", 1)
+#rename
+aa_1322[aa_1322$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+aa_1322[aa_1322$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+aa_1322[aa_1322$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+aa_1322[aa_1322$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+aa_1322[aa_1322$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+aa_1322[aa_1322$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+aa_1322[aa_1322$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+aa_1322[aa_1322$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+aa_1322[aa_1322$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+aa_1322[aa_1322$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+aa_0312 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/AsyAff_0312.xls")
+#rename
+aa_0312[aa_0312$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+aa_0312[aa_0312$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+aa_0312[aa_0312$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+aa_0312[aa_0312$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+aa_0312[aa_0312$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+aa_0312[aa_0312$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+aa_0312[aa_0312$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+aa_0312[aa_0312$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+aa_0312[aa_0312$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+aa_0312[aa_0312$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+
+# merge two data frames by Country
+aa_0322 <- merge(aa_0312, aa_1322, by = "Country Name", all = TRUE)
+aa_0322[, 2:ncol(aa_0322)] <- lapply(aa_0322[, 2:ncol(aa_0322)], as.numeric)
+
+
+
+################################ Defensive Asylum ################################
+# home desktop
+da_1322 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Asylum_1322.xlsx", 2)
+#rename
+da_1322[da_1322$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+da_1322[da_1322$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+da_1322[da_1322$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+da_1322[da_1322$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+da_1322[da_1322$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+da_1322[da_1322$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+da_1322[da_1322$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+da_1322[da_1322$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+da_1322[da_1322$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+da_1322[da_1322$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+da_0312 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/AsyDef_0312.xls")
+#rename
+da_0312[da_0312$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+da_0312[da_0312$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+da_0312[da_0312$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+da_0312[da_0312$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+da_0312[da_0312$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+da_0312[da_0312$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+da_0312[da_0312$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+da_0312[da_0312$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+da_0312[da_0312$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+da_0312[da_0312$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+da_0322 <- merge(da_0312, da_1322, by = "Country Name", all = TRUE)
+da_0322[, 2:ncol(da_0322)] <- lapply(da_0322[, 2:ncol(da_0322)], as.numeric)
+
+################################ Merge aa and da by Country ######################
+asylum0322 <- merge(aa_0322, da_0322, by = "Country Name", all = TRUE, suffixes = c(".df1", ".df2"))
+asylum0322[is.na(asylum0322)] <- 0
+
+for (year in 2003:2022) {
+  col_name_df1 <- paste0(year, ".df1")
+  col_name_df2 <- paste0(year, ".df2")
+  col_name <- as.character(year)
+  asylum0322[[col_name]] <- asylum0322[[col_name_df1]] + asylum0322[[col_name_df2]]
+}
+asylum0322[, c(2:41)] <- NULL
+
+
+################# Both Affirmative and Defensive Asylum ############################
+asylum9602 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Asylum_9602(both aff and def).xls")
+#rename
+asylum9602[asylum9602$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+asylum9602[asylum9602$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+asylum9602[asylum9602$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+asylum9602[asylum9602$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+asylum9602[asylum9602$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+asylum9602[asylum9602$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+asylum9602[asylum9602$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+asylum9602[asylum9602$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+asylum9602[asylum9602$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+asylum9602[asylum9602$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+asylum9602[, 2:ncol(asylum9602)] <- lapply(asylum9602[, 2:ncol(asylum9602)], as.numeric)
+asylum9602[is.na(asylum9602)] <- 0
+
+asylum9395 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Asylum_9395(both aff and def).xls")
+#rename
+asylum9395[asylum9395$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+asylum9395[asylum9395$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+asylum9395[asylum9395$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+asylum9395[asylum9395$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+asylum9395[asylum9395$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+asylum9395[asylum9395$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+asylum9395[asylum9395$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+asylum9395[asylum9395$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+asylum9395[asylum9395$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+asylum9395[asylum9395$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+asylum9395[, 2:ncol(asylum9395)] <- lapply(asylum9395[, 2:ncol(asylum9395)], as.numeric)
+asylum9395[is.na(asylum9395)] <- 0
+
+asylum9302 <- merge(asylum9395, asylum9602, by = "Country Name", all = TRUE)
+asylum9302[, 2:ncol(asylum9302)] <- lapply(asylum9302[, 2:ncol(asylum9302)], as.numeric)
+asylum9302[is.na(asylum9302)] <- 0
+
+################################ Merge 9302 and 0322 ######################
+asylum9322 <- merge(asylum9302, asylum0322, by = "Country Name", all = TRUE)
+asylum9322$`Series Name` <- 'Number of Asylum Seeker'
+asylum9322$`Series Code` <- 'NO.ASYLUM.'
+
+
+################################ NATURALIZATION ######################
+# home desktop
+nat9300 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Naturalization 9300.xlsx")
+# rename
+nat9300[nat9300$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+nat9300[nat9300$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+nat9300[nat9300$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+nat9300[nat9300$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+nat9300[nat9300$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+nat9300[nat9300$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+nat9300[nat9300$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+nat9300[nat9300$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+nat9300[nat9300$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+nat9300[nat9300$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+
+nat0110 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Naturalization 0110.xlsx")
+# rename
+nat0110[nat0110$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+nat0110[nat0110$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+nat0110[nat0110$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+nat0110[nat0110$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+nat0110[nat0110$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+nat0110[nat0110$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+nat0110[nat0110$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+nat0110[nat0110$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+nat0110[nat0110$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+nat0110[nat0110$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+nat1120 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Naturalization 1120.xlsx")
+# rename
+nat1120[nat1120$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+nat1120[nat1120$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+nat1120[nat1120$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+nat1120[nat1120$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+nat1120[nat1120$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+nat1120[nat1120$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+nat1120[nat1120$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+nat1120[nat1120$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+nat1120[nat1120$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+nat1120[nat1120$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+nat2122 <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/DHS-Yearbook of Immigration Stat/Naturalization 2122.xlsx", 3)
+# rename
+nat2122[nat2122$`Country Name` == 'Venezuela', 1] <- 'Venezuela, RB'
+nat2122[nat2122$`Country Name` == "Bahamas", 1] <- "Bahamas, The"
+nat2122[nat2122$`Country Name` == "Saint Kitts-Nevis", 1] <- "St. Kitts and Nevis"
+nat2122[nat2122$`Country Name` == 'Saint Lucia', 1] <- 'St. Lucia'
+nat2122[nat2122$`Country Name` == 'Saint Vincent and the Grenadines', 1] <- 'St. Vincent and the Grenadines'
+nat2122[nat2122$`Country Name` == 'Antigua-Barbuda', 1] <- 'Antigua and Barbuda'
+nat2122[nat2122$`Country Name` == 'Sint Maarten', 1] <- 'Sint Maarten (Dutch part)'
+nat2122[nat2122$`Country Name` == 'Saint Martin', 1] <- 'St. Martin (French part)'
+nat2122[nat2122$`Country Name` == 'St. Martin', 1] <- 'St. Martin (French part)'
+nat2122[nat2122$`Country Name` == 'U.S. Virgin Islands', 1] <- 'Virgin Islands (U.S.)'
+
+
+# merge two data frames by Country Name
+nat9310 <- merge(nat9300, nat0110, by = "Country Name", all = TRUE)
+nat9320 <- merge(nat9310, nat1120, by = "Country Name", all = TRUE)
+nat9322 <- merge(nat9320, nat2122, by = "Country Name", all = TRUE)
+
+
+# structure adjustment to fit the data structure
+nat9322$`Country Code` <- NULL
+nat9322$`Series Name` <- 'Number of Naturalization'
+nat9322$`Series Code` <- 'NO.NAT.'
+nat9322$`Series Code` <- as.character(nat9322$`Series Code`)
+nat9322$`Series Name` <- as.character(nat9322$`Series Name`)
+
+nat9322[, 2:ncol(nat9322)] <- lapply(nat9322[, 2:ncol(nat9322)], as.numeric)
+#nat9322[, 1] <- lapply(nat9322[, 1], as.character)
+nat9322[is.na(nat9322)] <- 0
+
+############# DATA ANALYSIS - LATIN AMERICAN INEQUALITY AND IMMIGRATION
+rm(list = ls())
+install.packages("readxl")
+install.packages("dplyr")
+library(readxl)
+library(dplyr)
+# school comp
+mydata <- read_excel("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/UNCC/2024 Spring/Thesis/Immigration and Global Inequality/Data/IVs_9322.xlsx")
+# my HP pc
+mydata <- read_excel("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/UNCC/2024 Spring/Thesis/Immigration and Global Inequality/Data/IVs_9322.xlsx")
+View(mydata)
+
+# rename the year columns
+colnames(mydata) <- c('Country Name', 'Country Code', 'Series Name', 'Series Code', 1993:2022) 
+## create new rows for 10-19 population percentage calculation
+countries <- unique(mydata$`Country Code`)
+new_data <- data.frame(matrix(ncol = ncol(mydata), nrow = length(countries)))
+colnames(new_data) <- colnames(mydata)
+new_data$`Country Code` <- countries
+new_data$`Series Name` <- '% of population age bw 10-19'
+new_data$`Country Name` <- unique(mydata$'Country Name')
+new_data$`Series Code` <- 'POP.1019'
+View(new_data)
+
+# changing columns to numeric
+colnum <- 5:ncol(mydata)
+new_data[, colnum] <- lapply(new_data[, colnum], as.numeric)
+# female pop
+mydata_fe1014 <- mydata[mydata$'Series Code' == 'SP.POP.1014.FE.5Y', c(5:ncol(mydata))]
+mydata_fe1014[, 1:ncol(mydata_fe1014)] <- lapply(mydata_fe1014[, 1:ncol(mydata_fe1014)], as.numeric)
+mydata_fe1519 <- mydata[mydata$'Series Code' == 'SP.POP.1519.FE.5Y', c(5:ncol(mydata))]
+mydata_fe1519[, 1:ncol(mydata_fe1519)] <- lapply(mydata_fe1519[, 1:ncol(mydata_fe1519)], as.numeric)
+mydata_fepop <- mydata[mydata$'Series Code' == 'SP.POP.TOTL.FE.IN', c(5:ncol(mydata))]
+mydata_fepop[, 1:ncol(mydata_fepop)] <- lapply(mydata_fepop[, 1:ncol(mydata_fepop)], as.numeric)
+fepop <- (mydata_fe1014 + mydata_fe1519) / 100 * mydata_fepop
+View(fepop)
+
+# male pop
+mydata_ma1014 <- mydata[mydata$'Series Code' == 'SP.POP.1014.MA.5Y', c(5:ncol(mydata))]
+mydata_ma1014[, 1:ncol(mydata_ma1014)] <- lapply(mydata_ma1014[, 1:ncol(mydata_ma1014)], as.numeric)
+mydata_ma1519 <- mydata[mydata$'Series Code' == 'SP.POP.1519.MA.5Y', c(5:ncol(mydata))]
+mydata_ma1519[, 1:ncol(mydata_ma1519)] <- lapply(mydata_ma1519[, 1:ncol(mydata_ma1519)], as.numeric)
+mydata_mapop <- mydata[mydata$`Series Code` == 'SP.POP.TOTL.MA.IN', c(5:ncol(mydata))]
+mydata_mapop[, 1:ncol(mydata_mapop)] <- lapply(mydata_mapop[, 1:ncol(mydata_mapop)], as.numeric)
+mapop <- (mydata_ma1014 + mydata_ma1519) / 100 * mydata_mapop
+# total pop for each country
+total_pop <- mydata[mydata$`Series Code` == 'SP.POP.TOTL', c(5:ncol(mydata))]
+total_pop[, 1:ncol(total_pop)] <- lapply(total_pop[, 1:ncol(total_pop)], as.numeric)
+# pop % of ages bw 10-19
+poppct_1019 <- round((fepop + mapop) / total_pop * 100, digits = 3)
+new_data[, c(5:ncol(new_data))] <- poppct_1019
+
+  
+mydata[, 5:ncol(mydata)] <- lapply(mydata[, 5:ncol(mydata)], as.numeric)
+merged_data <- bind_rows(mydata, new_data)
+merged_data <- merged_data[order(merged_data$`Country Code`), ]
+View(merged_data) 
+View(expulsion_9322)
+
+################# ADDING EXPULSION ######################
+filtered_exp <- expulsion_9322[expulsion_9322$'Country Name' %in% merged_data$'Country Name', ]
+View(mydata)
+View(expulsion_9322)
+View(filtered_exp)
+
+fulldata_expulsion <- bind_rows(merged_data, filtered_exp)
+fulldata_expulsion <- fulldata_expulsion[order(fulldata_expulsion$`Country Name`), ]
+View(fulldata_expulsion)
+
+fulldata_expulsion$`Country Code`[is.na(fulldata_expulsion$`Country Code`)] <- lag(fulldata_expulsion$`Country Code`)[is.na(fulldata_expulsion$`Country Code`)]
+View(fulldata_expulsion)
+################# ADDING EXPULSION ENDS ######################
+################# ADDING ASYLUM IN ADDITION TO EXPULSION ########################
+filtered_asy <- asylum9322[asylum9322$`Country Name` %in% fulldata_expulsion$`Country Name`,]
+
+data_ex_as <- bind_rows(fulldata_expulsion, filtered_asy)
+data_ex_as <- data_ex_as[order(data_ex_as$`Country Name`), ]
+
+data_ex_as$`Country Code`[is.na(data_ex_as$`Country Code`)] <- lag(data_ex_as$`Country Code`)[is.na(data_ex_as$`Country Code`)]
+
+################# ADDING LEGAL PERMANENT RESIDENT IN ADDITION TO EXPULSION & ASYLUM ########################
+filtered_lpr <- lpr9322[lpr9322$`Country Name` %in% data_ex_as$`Country Name`,]
+
+data_ael <- bind_rows(data_ex_as, filtered_lpr)
+data_ael <- data_ael[order(data_ael$`Country Name`), ]
+
+data_ael$`Country Code`[is.na(data_ael$`Country Code`)] <- lag(data_ael$`Country Code`)[is.na(data_ael$`Country Code`)]
+
+################# ADDING REFUGEE IN ADDITION TO EXPULSION & ASYLUM & LEGAL PERMANENT RESIDENT ########################
+filtered_ref <- ref9322[ref9322$`Country Name` %in% data_ael$`Country Name`,]
+
+data_aelr <- bind_rows(data_ael, filtered_ref)
+data_aelr <- data_aelr[order(data_aelr$`Country Name`), ]
+
+data_aelr$`Country Code`[is.na(data_aelr$`Country Code`)] <- lag(data_aelr$`Country Code`)[is.na(data_aelr$`Country Code`)]
+
+################# ADDING NATURALIZATION IN ADDITION TO EXPULSION & ASYLUM & LEGAL PERMANENT RESIDENT & REFUGEE ########################
+filtered_nat <- nat9322[nat9322$`Country Name` %in% data_aelr$`Country Name`,]
+
+cmpltdata <- bind_rows(data_aelr, filtered_nat)
+cmpltdata <- cmpltdata[order(cmpltdata$`Country Name`), ] 
+
+cmpltdata$`Country Code`[is.na(cmpltdata$`Country Code`)] <- lag(cmpltdata$`Country Code`)[is.na(cmpltdata$`Country Code`)]
+
+
+######################################### trying to retain Country Code BEGINS ################################
+
+
+# transposing rows/columns by grouping
+install.packages("tidyr")
+library(tidyr)
+# removing unncessary rows
+cmpltdata_drop <- cmpltdata[-(which(cmpltdata$'Series Code' %in% 
+                                                        c("SP.POP.TOTL", "SP.POP.1014.FE.5Y", "SP.POP.1014.MA.5Y", "SP.POP.1519.FE.5Y",
+                                                          "SP.POP.1519.MA.5Y", "SP.POP.GROW", "SP.POP.TOTL.FE.IN", "SP.POP.TOTL.MA.IN"))), ]
+
+t1 <- cmpltdata[,-c(4)]
+
+test_longer <- pivot_longer(
+  t1,
+  cols = c('1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'),
+  names_to = "Year",
+  values_drop_na = F
+)
+
+test_wider <- pivot_wider(test_longer,
+                          names_from = "Series Name",
+                          values_from = "value"
+)
+
+finalcmpt <- pivot_wider(test_longer,
+                        names_from = "Series Name",
+                        values_from = "value"
+)
+# adding a new column, CONSOLIDATED DV
+finalcmpt$dv <- rowSums(finalcmpt[, c("Number of Expulsion", 
+                                      "Number of Legal Permanent Resident", 
+                                      "Number of Naturalization", 
+                                      "Number of Asylum Seeker", 
+                                      "Number of Refugees")], na.rm = TRUE)
+
+# adding a new column, GDP per capita squared
+finalcmpt$GDP_squared <- finalcmpt$`GDP per capita, PPP (constant 2021 international $)` * finalcmpt$'GDP per capita, PPP (constant 2021 international $)'
+finalcmpt <- finalcmpt[ , c(1:4, 24, 5:23, 25)]
+######################################### trying to retain Country Code ENDS ################################
+
+
+#### Drop unnecessary columns
+refdata1 <- finalcmpt[, -c(4, 6, 9:13, 15:17, 20:24)]
+colnames(refdata1) <- c('country', 'c_code', 'year', 'dv', 'exports', 'gdp', 'educ', 'agri', 'teenage_pop', 'gdp2')
+################## ADDING ELECTORAL DEMOCRACY INDEX #############
+# school comp
+demindex <- read.csv("C:/Users/ckim55/OneDrive - University of North Carolina at Charlotte/Documents/UNCC/2024 Spring/Thesis/Immigration and Global Inequality/Data/electoral-democracy-index.csv")
+# my pc
+demindex <- read.csv("C:/Users/conra/OneDrive - University of North Carolina at Charlotte/Documents/UNCC/2024 Spring/Thesis/Immigration and Global Inequality/Data/electoral-democracy-index.csv")
+
+# adding a new column, democracy index
+colnames(demindex) <- c('country', 'c_code', 'year', 'dem_index')
+demindex$country <- NULL
+demindex$year <- as.numeric(demindex$year)
+refdata1$year <- as.numeric(refdata$year)
+
+refdata <- left_join(refdata1, demindex, by = join_by(c_code, year))
+
+
+refdata[refdata$dv == 0, 4] <- NA
+dvcleaned <- refdata[complete.cases(refdata$dv), ]
+
+#### drop rows with missing IVs or missing DVs ####
+library(dplyr)
+library(tidyr)
+
+refdata[, 3:11] <- lapply(refdata[, 3:11], as.numeric)
+refdata[, 1:2] <- lapply(refdata[, 1:2], as.character)
+
+valid_ids <- numeric(0)
+for (current_id in 1:nrow(refdata))
+{
+  c_code_current <- refdata$c_code[current_id] 
+  year_current <- refdata$year[current_id]
+  target_id <- which(refdata$c_code == c_code_current & 
+                       refdata$year == year_current - 5)
+  if (!is.na(refdata$dv[current_id]) && length(target_id) == 1)
+  {
+    if(!is.na(refdata$exports[target_id]) && 
+       !is.na(refdata$gdp[target_id]) && 
+       !is.na(refdata$educ[target_id]) &&
+       !is.na(refdata$agri[target_id]) &&
+       !is.na(refdata$teenage_pop[target_id]) &&
+       !is.na(refdata$dem_index[target_id]) &&
+       !is.na(refdata$gdp2[target_id]))
+    {
+      valid_ids <- c(valid_ids, target_id)
+      valid_ids <- c(valid_ids, current_id)
+    }
+  }
+}
+
+rdata <- refdata[sort(unique(valid_ids)),]
+unique(rdata$c_code)
+
+summary(valid_refdata)
+
+
+################################ Descriptive Statistics and Correlation Matrix ######################
+library(pastecs)
+stat.desc(rdata)
+cormat <- round(cor(cordata, use = "pairwise.complete.obs", method = c("pearson")), 3)
+
+cdata <- rdata[, -c(1:3)]
+cordata <- cdata[, c(1:3, 7, 4, 6, 8, 5)] 
+View(cormat)
+
+
+################################### REM regression ###################
+library(plm)
+
+#randemodel <- plm(dv ~ exports, 5 + gdp, 5 + gdp2 + teenage_pop + agri + educ + dem_index, data = rdata, index = c("country", "year"), model = "within")
+#randemodel <- plm(dv ~ log(exports) + log(gdp2) + teenage_pop + agri + educ + dem_index, data = rdata, index = c("country", "year"), model = "within")
+randemodel <- plm(log(dv) ~ log(lag(exports, 5)) + log(lag(gdp2, 5)) + lag(teenage_pop, 5) + lag(agri, 5) + lag(educ, 5) + lag(dem_index, 5), data = rdata, index = c("country", "year"), model = "random")
+summary(randemodel)
+fixedmodel  <- plm(log(dv) ~ log(lag(exports, 5)) + log(lag(gdp2, 5)) + lag(teenage_pop, 5) + lag(agri, 5) + lag(educ, 5) + lag(dem_index, 5), data = rdata, index = c("country", "year"), model = "within")
+phtest(fixedmodel, randemodel)
+
+############## Breusch-Pagan Lagrange Multiplier for random effects. Null is no panel effect (i.e. OLS better). #######
+pool <- plm(log(dv) ~ log(lag(exports, 5)) + log(lag(gdp2, 5)) + lag(teenage_pop, 5) + lag(agri, 5) + lag(educ, 5) + lag(dem_index, 5), data = rdata, index = c("country", "year"), model = "pooling")
+summary(pool)
+plmtest(pool, type = c("bp"))
+
+
+################## GRAPH ################
+install.packages("gplots")
+library(gplots)
+plotmeans(dv ~ year, main = "Heterogeneity across years", data = rdata)
+
+
+
+#### gpt help ####
+library(tidyverse)
+library(plm)
+refdata$dv <- as.numeric(refdata$dv)
+is.double(refdata$dv)
+
+
+filter_data <- function(df) {
+  df %>%
+    group_by(country) %>%
+    arrange(country, year) %>%
+    mutate(
+      lag_exports = lag(exports, 5),
+      lag_gdp = lag(gdp, 5),
+      lag_educ = lag(educ, 5),
+      lag_agri = lag(agri, 5),
+      lag_teenage_pop = lag(teenage_pop, 5),
+      lag_gdp2 = lag(gdp2, 5),
+      lag_dem_index = lag(dem_index, 5),
+      lead_dv = dplyr::lead(dv, 5),
+      lag_dv = lag(dv, 5)
+    ) %>%
+    filter(
+      (!is.na(dv) & !is.na(lag_exports) & !is.na(lag_gdp) &
+         !is.na(lag_educ) & !is.na(lag_agri) & !is.na(lag_teenage_pop) &
+         !is.na(lag_gdp2) & !is.na(lag_dem_index)) |
+        (!is.na(lead_dv) & year >= 1993 & 
+           !is.na(exports) & !is.na(gdp) & 
+           !is.na(educ) & !is.na(agri) & 
+           !is.na(teenage_pop) & !is.na(gdp2) & 
+           !is.na(dem_index)) |
+        (!is.na(dv) & year <= 2022 & 
+           !is.na(lag_exports) & !is.na(lag_gdp) & 
+           !is.na(lag_educ) & !is.na(lag_agri) & 
+           !is.na(lag_teenage_pop) & !is.na(lag_gdp2) & 
+           !is.na(lag_dem_index))
+    ) %>%
+    select(-starts_with("lag"), -lead_dv)
+}
+
+filtered_data <- filter_data(refdata)
+
+fpractice <- function(df) {
+  df %>%
+    group_by(country) %>%
+    arrange(country, year) %>%
+    mutate(
+      lag_exports = lag(exports, 5),
+      lag_gdp = lag(gdp, 5),
+      lag_educ = lag(educ, 5),
+      lag_agri = lag(agri, 5),
+      lag_teenage_pop = lag(teenage_pop, 5),
+      lag_gdp2 = lag(gdp2, 5),
+      lag_dem_index = lag(dem_index, 5),
+      lead_dv = dplyr::lead(dv, 5),
+      lag_dv = lag(dv, 5)
+    )
+}
+
+pdata <- fpractice(refdata)
+
+# remove rows with missing values for DV 
+cmplt_data <- na.omit(test_wider)
+View(test_wider)
+View(cmplt_data)
+
+countries_cmplt <- unique(cmplt_data$`Country Code`)
+count(countries_cmplt)
+ 
+#obs1_complt <- crossprod(!is.na(cmplt_data[, 3:8]))
+#View(obs1_complt)
+
+
+
+
+# clear up rows that do not satisfy the necessary conditions
+library(dplyr)
+filtered_data <- final_data %>%
+  filter(!is.na(final_data[, 3])) %>%
+  filter(!is.na(lag(final_data[, 4])) & !is.na(lag(final_data[, 5])) & !is.na(lag(final_data[, 6])) & !is.na(lag(final_data[, 7])) & !is.na(lag(final_data[, 8])) & !is.na(lag(final_data[, 9])) & !is.na(lag(final_data[, 10])))
+#filtered_data <- final_data %>%
+#  filter(!is.na('net emigration')) %>%
+#  filter(!is.na(lag('foreign direct investment')) & !is.na(lag('exports % of gdp')) & !is.na(lag('gdp per capita')) & !is.na(lag('GDP_squared')) & !is.na(lag('secondary school enrollment')) & !is.na(lag('% of teenage population')) & !is.na(lag('Dem_Index')))
+View(filtered_data)
+
+  # delete countries with only one observation
+table(filtered_data$`Country Code`) # checking # of countries included in the dataset
+realfinal <- filtered_data %>%
+  group_by(`Country Code`) %>%
+  filter(n() > 1)
+View(realfinal)
+  # Year difference should be 5 yrs
+truerealfinal1 <- realfinal %>%
+  arrange(`Country Code`, Year) %>%
+  group_by(`Country Code`) %>%
+  filter(Year - lag(Year) | lead(Year) - Year == 5) 
+View(truerealfinal1)
+truedata <- truerealfinal1 [-c(7, 12, 33, 43), ]
+View(truedata)
+length(unique(truerealfinal1$`Country Code`))
+unique(truerealfinal1$`Country Code`)
+'Country Name' <- c('Argentina', 'Bolivia', 'Barbados', 'Chile', 'Colombia', 'Costa Rica', 'Dominican Republic', 'Ecuador', 'Guatemala', 'Guyana', 'Jamaica', 'Mexico', 'Nicaragua', 'Panama', 'Peru', 'Paraguy', 'El Salvador', 'Uruguay')
+
+table(realfinal$'Country Code')
+  # list of countries included
+unique(realfinal$`Country Code`)
+  # counting how many countries are included
+length(unique(realfinal$`Country Code`))
+
+
+
+
+###### rename year columns in the original dataset to change them into numeric 
+write.csv(refdata, "conrad data.csv")
+
+valid_ids <- numeric(0)
+for (current_id in 1:nrow(refdata))
+{
+  c_code_current <- refdata$c_code[current_id] 
+  year_current <- refdata$year[current_id]
+  target_id <- which(refdata$c_code == c_code_current & 
+                       refdata$year == year_current - 5)
+  if (!is.na(refdata$dv[current_id]) && length(target_id) == 1)
+  {
+    if(!is.na(refdata$exports[target_id]) && 
+       !is.na(refdata$gdp[target_id]) && 
+       !is.na(refdata$educ[target_id]) &&
+       !is.na(refdata$agri[target_id]) &&
+       !is.na(refdata$teenage_pop[target_id]) &&
+       !is.na(refdata$gdp2[target_id]))
+    {
+      valid_ids <- c(valid_ids, current_id)
+    }
+  }
+}
+
+valid_refdata <- refdata[valid_ids,]
